@@ -1,0 +1,120 @@
+@font-face {
+  font-family: "Comfortaa";
+  src: url(../../assets/fonts/Comfortaa-VariableFont_wght.ttf) format("truetype"); }
+
+html {
+  -webkit-app-region: drag; }
+
+body {
+  overflow-x: hidden;
+  overflow-y: hidden; }
+
+* {
+  font-family: Comfortaa; }
+
+h1 {
+  color: #B01513; }
+
+h3 {
+  color: #B57915; }
+
+button {
+  color: whitesmoke;
+  background-color: orangered;
+  padding: 1ex 2em;
+  margin: 1ex 0; }
+  button :disabled {
+    background-color: grey; }
+
+.emrg_btn {
+  margin-top: 5ex;
+  transform: translate(50%, 0);
+  width: 50%;
+  height: 0;
+  padding-bottom: 50%;
+  border-radius: 50%; }
+
+.emrg_btn p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; }
+
+select {
+  color: whitesmoke;
+  background-color: orangered;
+  padding: 1ex 2em;
+  margin: 1ex 0; }
+  select option {
+    color: black;
+    background-color: #B57915; }
+    select option :disabled {
+      text-decoration: underline; }
+
+.title-container {
+  height: 20vh;
+  margin: 2ex 1em; }
+  .title-container div {
+    display: inline-block;
+    *display: inline;
+    margin: 0 1em; }
+  .title-container .title-logo {
+    height: inherit;
+    position: absolute;
+    z-index: 1; }
+    .title-container .title-logo img {
+      height: 75%; }
+  .title-container .title-text {
+    width: 100%;
+    text-align: center;
+    z-index: auto; }
+
+.horz-container {
+  width: 100vw;
+  height: 70vh;
+  margin: 0 1em; }
+  .horz-container .content-panel {
+    vertical-align: top;
+    display: inline-block;
+    *display: inline;
+    margin: 0 1em; }
+  .horz-container .reactor-commands {
+    width: 15%;
+    margin-left: 0; }
+    .horz-container .reactor-commands .button-stack {
+      display: flex;
+      flex-direction: column; }
+  .horz-container .reactor-console {
+    width: 28%;
+    height: inherit;
+    margin-left: auto;
+    margin-right: auto; }
+    .horz-container .reactor-console .status-bar {
+      color: whitesmoke;
+      background-color: black;
+      margin-bottom: 1px; }
+      .horz-container .reactor-console .status-bar span {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        width: 40%; }
+    .horz-container .reactor-console .console {
+      width: 100%;
+      height: 90%;
+      color: whitesmoke;
+      background-color: black;
+      text-align: left; }
+      .horz-container .reactor-console .console span {
+        font-family: monospace; }
+  .horz-container .reactor-dataplots {
+    width: 50%;
+    height: inherit;
+    margin-left: 2em; }
+    .horz-container .reactor-dataplots #dataplot-selectors select option#selected {
+      /* font-weight: bolder; */
+      background-color: #B29C77; }
+    .horz-container .reactor-dataplots #dataplot-selectors select option.set {
+      font-weight: bolder; }
+    .horz-container .reactor-dataplots #dataplot-selectors select option.series {
+      font-style: italic; }

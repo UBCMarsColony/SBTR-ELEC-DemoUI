@@ -28,15 +28,26 @@ button {
 	padding: 1ex 2em;
 	margin: 1ex 0;
 
-	:hover {
-		background-color: orange;
-	}
-
 	:disabled {
 		background-color: grey;
 	}
 }
 
+.emrg_btn {
+	margin-top: 5ex;
+	transform: translate(50%,0);
+	width: 50%;
+  	height: 0;
+  	padding-bottom: 50%;
+  	border-radius: 50%;
+}
+.emrg_btn p {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+  }
 select {
 	color: whitesmoke;
 	background-color: orangered;

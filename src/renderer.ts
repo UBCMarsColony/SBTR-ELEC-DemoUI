@@ -88,3 +88,7 @@ function routine_stop()
 	notebook.append("Stop Routine Not Implemented", notebook.ERROR);
 }
 
+function emrg_secq()
+{
+	notebook.append("Emergency Sequence Not Implemented", notebook.ERROR);
+}

@@ -1,4 +1,4 @@
-import SerialPort from "serialport";
+import SerialPort, { parsers } from "serialport";
 import { Dataset, Dataseries, Datapoint, name_from_id } from "./models/data.model";
 import { Bytestream, SerialStatus, SerialReceiveCallback,
          SerialBinding, StatusBinding, DataBinding, BindingStore} from "./models/serial.model";
@@ -90,6 +90,7 @@ export function run()
 	// Let's see if we can attach to one...
 	// @ts-ignore  (Usual type PortInfo doesn't seem to work;
 	//              use ts-ignore to avoid 'implicit any' error)
+
 	SerialPort.list().then((ports: Array<any>) =>
 	{
 		if (ports.length === 0)
@@ -120,14 +121,17 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 {
 	// @ts-ignore
 	port = new SerialPort(path, {
-		baudRate: 2000000,  // 2 Mb/s
+		baudRate: 9600,  
 		autoOpen: false	    // Wait for the user to connect
 	});
-	
-	const parser = port.pipe(
-		new SerialPort.parsers.Ready({delimiter: 'RSIP>>'}));
-	parser.on('ready', () => console.log('Data incoming'));
-	parser.on('data', on_receive);
+
+	const ReadLine =  require('@serialport/parser-readline')
+	const parser = port.pipe(new ReadLine())
+	parser.on('data', console.log)
+	// port.pipe(
+	// 	new SerialPort.parsers.Ready({delimiter: 'RSIP>>'}));
+	// parser.on('ready', () => console.log('Data incoming'));
+	// parser.on('data', on_receive);
 }
 
 /* Author: Thomas Richmond

@@ -30,7 +30,7 @@
 		</div>
 		<div class="title-text">
 			<h1>Sabatier Reactor Monitor</h1>
-			<h3>UBC Mars Colony<h3/>
+			<h3>UBC Mars Colony</h3>
 		</div>
 		<hr/>
 	</div>
@@ -48,6 +48,9 @@
 				</button>
 				<button onclick="routine_stop()">
 					REACTOR STOP
+				</button>
+				<button onclick="emrg_secq()" class="emrg_btn">
+					<p>EMERGENCY BTN1</p>
 				</button>
 			</div>
 		</div>
@@ -80,8 +83,8 @@
 					<!-- <option selected disabled value="title">Show Custom Chart</option> -->
 					<!-- <option onclick=><i>Add</i></option> -->
 				<!-- </select> -->
-				<button onclick="charts.popped.pop(charts.primary.current_plot)">[] -> [[=]</button>
-				<button onclick="charts.popped.close_all()">[[X]</button>
+				<button onclick="charts.popped.pop(charts.primary.current_plot)">Pop Chart</button>
+				<button onclick="charts.popped.close_all()">Close Pop</button>
 			</div>
 		</div>
 	</div>
