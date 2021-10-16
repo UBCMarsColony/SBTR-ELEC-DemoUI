@@ -1,3 +1,5 @@
+import prompt from "electron-prompt"
+
 // The reactor's data
 import { Dataset, Dataseries, Datapoint } from "./models/data.model";
 
@@ -5,7 +7,6 @@ import { Dataset, Dataseries, Datapoint } from "./models/data.model";
 import reactor_data from './dist/reactor.data';
 
 // Serial Connection
-
 // @ts-ignore
 import * as serial from './dist/serial';
 // @ts-ignore
@@ -88,7 +89,23 @@ function routine_stop()
 	notebook.append("Stop Routine Not Implemented", notebook.ERROR);
 }
 
-function emrg_secq()
+function routine_manual()
 {
-	notebook.append("Emergency Sequence Not Implemented", notebook.ERROR);
+
+	if(serial.connected()) {
+		prompt({
+			title: 'Command prompt',
+			label: 'Command:',
+			type: 'input'
+		})
+		.then((command) => {
+			if(!serial.sendManualCommandToReactor(command)){
+			 notebook.append("Invaild command", notebook.WARNING);
+			}
+		})
+		.catch(console.error);
+	} 
+	else {
+		notebook.append("Reactor not connected.", notebook.ERROR);
+	}
 }

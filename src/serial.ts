@@ -36,6 +36,7 @@ const DEFAULT_PORT_CB: SerialReceiveCallback = (bytestream: Bytestream) =>
 
 	bindings.data.forEach((cb: DataBinding) => 
 		cb(parsed_dataset));
+
 };
 
 export function init()
@@ -127,11 +128,13 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 
 	const ReadLine =  require('@serialport/parser-readline')
 	const parser = port.pipe(new ReadLine())
-	parser.on('data', console.log)
 	// port.pipe(
 	// 	new SerialPort.parsers.Ready({delimiter: 'RSIP>>'}));
-	// parser.on('ready', () => console.log('Data incoming'));
-	// parser.on('data', on_receive);
+	//parser.on('ready', () => console.log('Data incoming'));
+	parser.on('data', (data: String) => {
+		// Add a check that data came from our arduino with a signature
+		console.log(data)
+	});
 }
 
 /* Author: Thomas Richmond
@@ -237,3 +240,19 @@ function parse_reactor_data(bytestream: Bytestream): Dataset
 	return dataset;
 }
 
+/* Author: Eldad Zipori
+ * Purpose: Handles sending manual commands sequance to the arduino
+ * Parameter: The string represntation of the command
+ * Returns: True if the passed command is valid, otherwise false
+ */
+export function sendManualCommandToReactor(command: String) :boolean {
+	switch (command) {
+		case 'heat-temp': 
+			port.write("1", (error) => {
+				console.log("sent 1 to arduio");
+
+			});
+		break;
+	}
+	return true;
+}
