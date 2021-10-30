@@ -1,13 +1,18 @@
+import * as notebook from "./window.notebook";
+import reactor_data from '../dist/reactor.data';
 import SerialPort, { parsers } from "serialport";
 import { Dataset, Dataseries, Datapoint, name_from_id } from "./models/data.model";
 import { Bytestream, SerialStatus, SerialReceiveCallback,
          SerialBinding, StatusBinding, DataBinding, BindingStore} from "./models/serial.model";
+		 
 
 // All bindings are stored here:
 const bindings: BindingStore = {
 	status: [],
 	data: []
 };
+
+var counter = 0;
 
 // This contains information for the Serial port we attach/connect to.
 let port: SerialPort = null;
@@ -128,12 +133,22 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 
 	const ReadLine =  require('@serialport/parser-readline')
 	const parser = port.pipe(new ReadLine())
-	// port.pipe(
-	// 	new SerialPort.parsers.Ready({delimiter: 'RSIP>>'}));
-	//parser.on('ready', () => console.log('Data incoming'));
-	parser.on('data', (data: String) => {
+
+	// This annonymus function dictates how to handle the data recived from the arduino.
+	parser.on('data',(data: String) => {
 		// Add a check that data came from our arduino with a signature
-		console.log(data)
+		const cmdInitials = data.substring(0,2);
+		const dataValues = data.substring(3).split(',');
+
+		if(cmdInitials === "RT"){
+			//notebook.append(`Current heating temp tempratures are: ${dataValues[0]}, ${dataValues[1]}, ${dataValues[2]}`);
+			const avg =  (parseInt(dataValues[0]) + parseInt(dataValues[1]) + parseInt(dataValues[2]))/ 3.0;
+			reactor_data.datasets.DATA_SPEC[0].series[0].data.push({counter,avg});
+			console.log(reactor_data.datasets);
+			counter++;
+		} else if(cmdInitials === "RF") { // Order is always H2, Ar, CO2
+			notebook.append(`Current flow rates: \n H2 - ${dataValues[0]}\n Ar - ${dataValues[1]}\n CO2 - ${dataValues[2]}`);
+		}
 	});
 }
 
@@ -246,13 +261,51 @@ function parse_reactor_data(bytestream: Bytestream): Dataset
  * Returns: True if the passed command is valid, otherwise false
  */
 export function sendManualCommandToReactor(command: String) :boolean {
-	switch (command) {
-		case 'heat-temp': 
-			port.write("1", (error) => {
-				console.log("sent 1 to arduio");
+	if(command.search("set-flow") === 0) {
+		const cmdStart = command.search(/\(/);
+		
+		if( cmdStart && command.search(/\)/) === command.length - 1){
+			const cmdValues = command.substring(cmdStart+1, command.length - 1).split(',');
+			
+			if(cmdValues.length === 2){
+				if(cmdValues[0] === "CO2" || cmdValues[0] === "Ar" || cmdValues[0] === 'H2') {
+					if (parseFloat(cmdValues[1]) !== NaN){
+						const firmwareCommand = `SF;${cmdValues[0]},${cmdValues}`
+						port.write(firmwareCommand, (error) => {
+							if(error) {
+		
+							} else {
+								notebook.append(`Asking the firmware to set the flow rate of ${cmdValues[0]} to ${cmdValues[1]}`);
+							}
+						});
+					}
+				}
+			}
+		}
+	} else {
+		switch (command) {
+			case 'heat-temp': 
+				port.write("1", (error) => {
+					if(error) {
 
-			});
-		break;
+					} else {
+						notebook.append('Sent heat tape temperature request to firmware');
+					}
+				});
+				break;
+			case 'read-flow':
+				port.write("2", (error) => {
+					if(error) {
+
+					} else {
+						notebook.append('Sent flow rates request to firmware');
+					}
+				});
+				break;
+			default:
+				notebook.append("Invalid command",notebook.WARNING) 
+				break;
+		}
 	}
 	return true;
 }
