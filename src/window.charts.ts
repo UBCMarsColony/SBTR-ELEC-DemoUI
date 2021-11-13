@@ -51,7 +51,6 @@ export function init_selector(datasets: Array<Dataset>)
  */
 export function select(selector: HTMLSelectElement)
 {
-	console.log(reactor_data.datasets);
 	// Retrieve and parse the datakey as follows:
 	// 	- The number before the colon is the dataset ID, and is required; 
 	//	- The number after the colon is the dataseries ID, and is optional.

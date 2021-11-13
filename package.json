@@ -44,6 +44,7 @@
     "@types/jquery": "^3.3.31",
     "@types/serialport": "^7.0.4",
     "chart.js": "^2.9.3",
+    "electron-prompt": "^1.7.0",
     "electron-window-manager": "^1.0.6",
     "fs-jetpack": "^2.1.0",
     "serialport": "^8.0.5"
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "@types/electron-prompt": "^1.6.1",
     "babel-loader": "^8.0.0-beta.4",
     "chai": "^4.1.0",
     "css-loader": "^3.1.0",

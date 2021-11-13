@@ -1,5 +1,7 @@
 import * as notebook from "./window.notebook";
-import reactor_data from '../dist/reactor.data';
+// @ts-ignore
+import reactor_data from './reactor.data';
+
 import SerialPort, { parsers } from "serialport";
 import { Dataset, Dataseries, Datapoint, name_from_id } from "./models/data.model";
 import { Bytestream, SerialStatus, SerialReceiveCallback,
@@ -12,7 +14,7 @@ const bindings: BindingStore = {
 	data: []
 };
 
-var counter = 0;
+const startTime = Date.now();
 
 // This contains information for the Serial port we attach/connect to.
 let port: SerialPort = null;
@@ -136,16 +138,18 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 
 	// This annonymus function dictates how to handle the data recived from the arduino.
 	parser.on('data',(data: String) => {
-		// Add a check that data came from our arduino with a signature
+
 		const cmdInitials = data.substring(0,2);
 		const dataValues = data.substring(3).split(',');
 
 		if(cmdInitials === "RT"){
-			//notebook.append(`Current heating temp tempratures are: ${dataValues[0]}, ${dataValues[1]}, ${dataValues[2]}`);
 			const avg =  (parseInt(dataValues[0]) + parseInt(dataValues[1]) + parseInt(dataValues[2]))/ 3.0;
-			reactor_data.datasets.DATA_SPEC[0].series[0].data.push({counter,avg});
-			console.log(reactor_data.datasets);
-			counter++;
+			const dataPoint = {time: Date.now() - startTime, value: avg};
+
+			console.log("here");
+
+			reactor_data.datasets[0].series[0].data.push(dataPoint);
+
 		} else if(cmdInitials === "RF") { // Order is always H2, Ar, CO2
 			notebook.append(`Current flow rates: \n H2 - ${dataValues[0]}\n Ar - ${dataValues[1]}\n CO2 - ${dataValues[2]}`);
 		}
