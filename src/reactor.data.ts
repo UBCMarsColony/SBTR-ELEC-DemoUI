@@ -36,6 +36,10 @@ const reactor_data = {
 	
 	clear_half: function(dataset: number) {
 		// Stub
+	},
+
+	add_to_data_set: function(dataset: string, seriesName: string, data: Datapoint){
+		reactor_data.datasets.find(set => set.name === dataset).series.find(series => series.name === seriesName).data.push(data);
 	}
 };
 

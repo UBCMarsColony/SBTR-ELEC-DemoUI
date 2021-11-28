@@ -144,11 +144,10 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 
 		if(cmdInitials === "RT"){
 			const avg =  (parseInt(dataValues[0]) + parseInt(dataValues[1]) + parseInt(dataValues[2]))/ 3.0;
-			const dataPoint = {time: Date.now() - startTime, value: avg};
+			const dataPoint = {time: (Date.now() - startTime)/1000, value: avg};
 
-			console.log("here");
 
-			reactor_data.datasets[0].series[0].data.push(dataPoint);
+			reactor_data.add_to_data_set("Temperature", "Mixer",dataPoint);
 
 		} else if(cmdInitials === "RF") { // Order is always H2, Ar, CO2
 			notebook.append(`Current flow rates: \n H2 - ${dataValues[0]}\n Ar - ${dataValues[1]}\n CO2 - ${dataValues[2]}`);

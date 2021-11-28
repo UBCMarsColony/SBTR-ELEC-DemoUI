@@ -5,23 +5,8 @@
 		"units": "Celsius",
 		"series": [
 			{
-				"name": "Mixer",
+				"name": "Average",
 				"id": 1,
-				"data": []
-			},
-			{
-				"name": "Inflow",
-				"id": 2,
-				"data": []
-			},
-			{
-				"name": "Reactor",
-				"id": 3,
-				"data": []
-			},
-			{
-				"name": "Outflow",
-				"id": 4,
 				"data": []
 			}
 		]
