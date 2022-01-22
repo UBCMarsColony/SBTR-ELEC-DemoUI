@@ -164,8 +164,8 @@ export function update(dataset: Dataset) {
 		if ((series.data[series.data.length - 1] as Chart.ChartPoint).x as number > max_xval)
 			max_xval = (series.data[series.data.length - 1] as Chart.ChartPoint).x as number;
 	
-	macro.options.scales.xAxes[0].ticks.suggestedMax = Math.ceil(max_xval / 2) * 2;
-	micro.options.scales.xAxes[0].ticks.suggestedMax = Math.ceil(max_xval / 2) * 2;
+	macro.options.scales.xAxes[0].ticks.suggestedMax = Math.ceil(max_xval / 1.4);
+	micro.options.scales.xAxes[0].ticks.suggestedMax = Math.ceil(max_xval * 1.4);
 	
 	// Convolute the macro-scale plot data so we don't keep re-rendering a ton of data
 	convolve_chart(macro, CONVOLVER_STRENGTH);

@@ -135,19 +135,20 @@ function attach(path: string, on_receive: SerialReceiveCallback)
 
 	const ReadLine =  require('@serialport/parser-readline')
 	const parser = port.pipe(new ReadLine())
-
+	
 	// This annonymus function dictates how to handle the data recived from the arduino.
 	parser.on('data',(data: String) => {
 
 		const cmdInitials = data.substring(0,2);
 		const dataValues = data.substring(3).split(',');
 
+		
 		if(cmdInitials === "RT"){
 			const avg =  (parseInt(dataValues[0]) + parseInt(dataValues[1]) + parseInt(dataValues[2]))/ 3.0;
 			const dataPoint = {time: (Date.now() - startTime)/1000, value: avg};
 
 
-			reactor_data.add_to_data_set("Temperature", "Mixer",dataPoint);
+			reactor_data.add_to_data_set("Temperature", "Average",dataPoint);
 
 		} else if(cmdInitials === "RF") { // Order is always H2, Ar, CO2
 			notebook.append(`Current flow rates: \n H2 - ${dataValues[0]}\n Ar - ${dataValues[1]}\n CO2 - ${dataValues[2]}`);
