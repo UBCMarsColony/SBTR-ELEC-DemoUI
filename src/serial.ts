@@ -265,7 +265,7 @@ function parse_reactor_data(bytestream: Bytestream): Dataset
  * Returns: True if the passed command is valid, otherwise false
  */
 export function sendManualCommandToReactor(command: String) :boolean {
-	if(command.search("set-flow") === 0) {
+	if(command.search("SF") === 0) {
 		const cmdStart = command.search(/\(/);
 		
 		if( cmdStart && command.search(/\)/) === command.length - 1){
@@ -288,8 +288,8 @@ export function sendManualCommandToReactor(command: String) :boolean {
 		}
 	} else {
 		switch (command) {
-			case 'heat-temp': 
-				port.write("1", (error) => {
+			case 'RF': 
+				port.write("RF", (error) => {
 					if(error) {
 
 					} else {
@@ -297,12 +297,30 @@ export function sendManualCommandToReactor(command: String) :boolean {
 					}
 				});
 				break;
-			case 'read-flow':
-				port.write("2", (error) => {
+			case 'RF':
+				port.write("RF", (error) => {
 					if(error) {
 
 					} else {
 						notebook.append('Sent flow rates request to firmware');
+					}
+				});
+				break;
+			case 'SV':
+				port.write("SV", (error) => {
+					if(error) {
+
+					} else {
+						notebook.append('Sent valves switch on request to firmware');
+					}
+				});
+				break;
+			case 'SO':
+				port.write("SO", (error) => {
+					if(error) {
+
+					} else {
+						notebook.append('Sent valves switch on request to firmware');
 					}
 				});
 				break;
