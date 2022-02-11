@@ -259,75 +259,55 @@ function parse_reactor_data(bytestream: Bytestream): Dataset
 	return dataset;
 }
 
+
+const commandMsg :  { [key: string]: string } = 
+	{
+		'SF' : 'Asking the firmware to set the flow rate of ', // {name of gas} to {value}
+		'RT': 'Sent heat tape temperature request to firmware',
+		'RF': 'Sent flow rates request to firmware',
+		'SV': 'Sent valves switch on request to firmware',
+		'SO': 'Sent valves switch on request to firmware',
+		'MM': 'Requesting manual control from firmware',
+		'EM': 'EMERGENCY MODE REQUESTED',
+		'NM': 'Asking firmware to switch to normal opertion mode',
+	}
+
+const gasses = ["CO2","Ar","H2"]
+
+
 /* Author: Eldad Zipori
  * Purpose: Handles sending manual commands sequance to the arduino
  * Parameter: The string represntation of the command
  * Returns: True if the passed command is valid, otherwise false
  */
 export function sendManualCommandToReactor(command: String) :boolean {
-	if(command.search("SF") === 0) {
-		const cmdStart = command.search(/\(/);
-		
-		if( cmdStart && command.search(/\)/) === command.length - 1){
-			const cmdValues = command.substring(cmdStart+1, command.length - 1).split(',');
-			
-			if(cmdValues.length === 2){
-				if(cmdValues[0] === "CO2" || cmdValues[0] === "Ar" || cmdValues[0] === 'H2') {
-					if (parseFloat(cmdValues[1]) !== NaN){
-						const firmwareCommand = `SF;${cmdValues[0]},${cmdValues}`
-						port.write(firmwareCommand, (error) => {
-							if(error) {
-		
-							} else {
-								notebook.append(`Asking the firmware to set the flow rate of ${cmdValues[0]} to ${cmdValues[1]}`);
-							}
-						});
-					}
-				}
-			}
-		}
-	} else {
-		switch (command) {
-			case 'RF': 
-				port.write("RF", (error) => {
-					if(error) {
+	const cmdInitials = command.substring(0,2);
 
-					} else {
-						notebook.append('Sent heat tape temperature request to firmware');
-					}
-				});
-				break;
-			case 'RF':
-				port.write("RF", (error) => {
-					if(error) {
+	if(cmdInitials.length !== 2) {
+		notebook.append("Command initials must be two letters long, i.e. SF." ,notebook.ERROR);
+	} 
+	else if(commandMsg[cmdInitials] === undefined) {
+		notebook.append("Cannot find command initial" ,notebook.ERROR);
+	}
+	else {
+		let error = false;
+		switch(cmdInitials){
+			case 'SF':
+				const values = command.substring(command.search(/;/) + 1, command.length - 1).split(',');
+				if(values.length !== 2) {notebook.append("SF commands takes two values only")}
+				// 1 - CO2, 2 - Ar, 3 - H2
+				if(values[0] !== "1" && values[0] !== "2" && values[0] !== "3" ) {notebook.append("Invalid choice of gas")}
+				notebook.append(commandMsg[cmdInitials] + `${gasses[parseInt(values[0])]} to ${values[1]}`)
+			break;
 
-					} else {
-						notebook.append('Sent flow rates request to firmware');
-					}
-				});
-				break;
-			case 'SV':
-				port.write("SV", (error) => {
-					if(error) {
-
-					} else {
-						notebook.append('Sent valves switch on request to firmware');
-					}
-				});
-				break;
-			case 'SO':
-				port.write("SO", (error) => {
-					if(error) {
-
-					} else {
-						notebook.append('Sent valves switch on request to firmware');
-					}
-				});
-				break;
 			default:
-				notebook.append("Invalid command",notebook.WARNING) 
+				notebook.append(commandMsg[cmdInitials]);
 				break;
 		}
+
+		if(!error) {port.write(command, (error) => {
+			if(error) {notebook.append(error, notebook.ERROR)}
+		})}
 	}
 	return true;
 }
